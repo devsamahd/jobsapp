@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import useFetch from '../../../hook/useFetch'
 import { View, Text, ActivityIndicator, FlatList } from 'react-native'
-
 import styles from './popularjobs.style'
 import { useRouter } from 'expo-router'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -8,10 +8,11 @@ import { COLORS, SIZES } from '../../../constants'
 import PopularJobCard from '../../common/cards/popular/PopularJobCard'
 
 const Popularjobs = () => {
-  const [popularJobs, setPopularJobs] = useState([])
+  const {data, isLoading, error} = useFetch('search',{
+    query: 'React Developer',
+    num_pages: 1
+  })
   const router = useRouter()
-  const isLoading = false
-  const error = false
   return (
     <View style= {styles.container}>
       <View style={styles.header}>
@@ -23,11 +24,11 @@ const Popularjobs = () => {
       <View style={styles.cardsContainer}>
         {isLoading ? <ActivityIndicator size="large" color={COLORS.primary} /> : error? <Text>Something is wrong</Text> :
          <FlatList
-          data={[1, 2, 3, 4]}
+          data={data}
           renderItem={({item})=>(
-            <PopularJobCard item={item}   />
+            <PopularJobCard item={item} />
           )}
-          keyExtractor={item => item}
+          keyExtractor={item => item.job_id}
           contentContainerStyle={{columnGap:SIZES.medium}}
           horizontal
          >
